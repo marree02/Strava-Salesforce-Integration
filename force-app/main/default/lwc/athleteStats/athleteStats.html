@@ -1,0 +1,29 @@
+<template>
+    <div class="container">
+        <lightning-button label="Refresh" onclick={refreshData}></lightning-button>
+        <template if:true={athletes}>
+            <template for:each={athletes} for:item="athlete">
+                <div key={athlete.Id} class="athlete-card">
+                    <p>Biggest Ride Distance: {athlete.Biggest_Ride_Distance__c}</p>
+                    <p>Biggest Climb Elevation Gain: {athlete.Biggest_Climb_Elevation_Gain__c}</p>
+                    <p>Recent Ride Count: {athlete.Recent_Ride_Count__c}</p>
+                    <p>Recent Ride Distance: {athlete.Recent_Ride_Distance__c}</p>
+                    <p>Recent Ride Moving Time: {athlete.Recent_Ride_Moving_Time__c}</p>
+                    <p>Recent Ride Elapsed Time: {athlete.Recent_Ride_Elapsed_Time__c}</p>
+                    <p>Recent Ride Elevation Gain: {athlete.Recent_Ride_Elevation_Gain__c}</p>
+                    <p>Recent Ride Achievement Count: {athlete.Recent_Ride_Achievement_Count__c}</p>
+                    <p>All Ride Count: {athlete.All_Ride_Count__c}</p>
+                    <p>All Ride Distance: {athlete.All_Ride_Distance__c}</p>
+                    <p>All Ride Moving Time: {athlete.All_Ride_Moving_Time__c}</p>
+                    <p>All Ride Elapsed Time: {athlete.All_Ride_Elapsed_Time__c}</p>
+                    <p>All Ride Elevation Gain: {athlete.All_Ride_Elevation_Gain__c}</p>
+                    <p>Recent Run Count: {athlete.Recent_Run_Count__c}</p>
+                    <p>Recent Run Distance: {athlete.Recent_Run_Distance__c}</p>
+                    <p>Recent Run Moving Time: {athlete.Recent_Run_Moving_Time__c}</p>
+                    <p>Recent Run Elapsed Time: {athlete.Recent_Run_Elapsed_Time__c}</p>
+                    <p>Recent Run Elevation Gain: {athlete.Recent_Run_Elapsed_Time__c}</p>
+                </div>
+            </template>
+        </template>
+    </div>
+</template>

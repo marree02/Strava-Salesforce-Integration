@@ -1,10 +1,10 @@
-public class AthletesApiExample {
+public with sharing class AthleteApiStats {
     public void getStats() {
         for (Athlete__c athlete : Trigger.new) {
             HttpRequest req = new HttpRequest();
             req.setEndpoint('callout:Strava_Named_Credential/api/v3/athletes/' + athlete.Id + '/stats');
             req.setMethod('GET');
-            req.setHeader('Authorization', 'Bearer 02fd966efc120b50bdb3b22ac59ea774840bb217');
+            req.setHeader('Authorization', 'Bearer 30d453d66c5dd82d18c2dc8590034065fd20b01b');
     
             Http http = new Http();
             HttpResponse res = http.send(req);
