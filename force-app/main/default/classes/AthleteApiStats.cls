@@ -1,6 +1,6 @@
 public with sharing class AthleteApiStats {
-    public void getStats() {
-        for (Athlete__c athlete : Trigger.new) {
+    public void getStats(List<Athlete__c> newAthletes) {
+        for (Athlete__c athlete : newAthletes) {
             HttpRequest req = new HttpRequest();
             req.setEndpoint('callout:Strava_Named_Credential/api/v3/athletes/' + athlete.Id + '/stats');
             req.setMethod('GET');
@@ -34,4 +34,5 @@ public with sharing class AthleteApiStats {
                 System.debug('Callout failed with status ' + res.getStatusCode() + ' ' + res.getStatus());
             }
         }
+    }
 }
