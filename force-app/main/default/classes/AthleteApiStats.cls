@@ -1,38 +1,49 @@
 public with sharing class AthleteApiStats {
-    public void getStats(List<Athlete__c> newAthletes) {
+    @AuraEnabled
+    public static void getStats(List<Athlete__c> newAthletes) {
+        List<Athlete__c> athletesToUpdate = new List<Athlete__c>();
+
         for (Athlete__c athlete : newAthletes) {
             HttpRequest req = new HttpRequest();
             req.setEndpoint('callout:Strava_Named_Credential/api/v3/athletes/' + athlete.Id + '/stats');
             req.setMethod('GET');
-            req.setHeader('Authorization', 'Bearer 30d453d66c5dd82d18c2dc8590034065fd20b01b');
-    
+
             Http http = new Http();
             HttpResponse res = http.send(req);
-    
-            // Parse the JSON response
+
             if (res.getStatusCode() == 200) {
                 Map<String, Object> results = (Map<String, Object>) JSON.deserializeUntyped(res.getBody());
-                // Fetch the values from the JSON response
-                Decimal biggestRideDistance = (Decimal)results.get('biggest_ride_distance');
-                Decimal biggestClimbElevationGain = (Decimal)results.get('biggest_climb_elevation_gain');
-                Map<String, Object> recentRideTotals = (Map<String, Object>)results.get('recent_ride_totals');
-    
-                // Add the fetched values to the athlete
-                athlete.Biggest_Ride_Distance__c = biggestRideDistance;
-                athlete.Biggest_Climb_Elevation_Gain__c = biggestClimbElevationGain;
-                athlete.Recent_Ride_Count__c = (Integer)recentRideTotals.get('count');
-                athlete.Recent_Ride_Distance__c = (Decimal)recentRideTotals.get('distance');
-                athlete.Recent_Ride_Moving_Time__c = (Integer)recentRideTotals.get('moving_time');
-                athlete.Recent_Ride_Elapsed_Time__c = (Integer)recentRideTotals.get('elapsed_time');
-                athlete.Recent_Ride_Elevation_Gain__c = (Decimal)recentRideTotals.get('elevation_gain');
-                athlete.Recent_Ride_Achievement_Count__c = (Integer)recentRideTotals.get('achievement_count');
-    
-                // Update the athlete record
-                update athlete;
-                // TODO: Handle the results as needed
+
+                // Update athlete record fields with data from the API response
+                athlete.Biggest_Ride_Distance__c = (Decimal) results.get('biggest_ride_distance');
+                athlete.Biggest_Climb_Elevation_Gain__c = (Decimal) results.get('biggest_climb_elevation_gain');
+                athlete.Recent_Ride_Count__c = (Integer) results.get('recent_ride_count');
+                athlete.Recent_Ride_Distance__c = (Decimal) results.get('recent_ride_distance');
+                athlete.Recent_Ride_Moving_Time__c = (Integer) results.get('recent_ride_moving_time');
+                athlete.Recent_Ride_Elapsed_Time__c = (Integer) results.get('recent_ride_elapsed_time');
+                athlete.Recent_Ride_Elevation_Gain__c = (Decimal) results.get('recent_ride_elevation_gain');
+                athlete.Recent_Ride_Achievement_Count__c = (Integer) results.get('recent_ride_achievement_count');
+                athlete.All_Ride_Count__c = (Integer) results.get('all_ride_count');
+                athlete.All_Ride_Distance__c = (Decimal) results.get('all_ride_distance');
+                athlete.All_Ride_Moving_Time__c = (Integer) results.get('all_ride_moving_time');
+                athlete.All_Ride_Elapsed_Time__c = (Integer) results.get('all_ride_elapsed_time');
+                athlete.All_Ride_Elevation_Gain__c = (Decimal) results.get('all_ride_elevation_gain');
+                athlete.Recent_Run_Count__c = (Integer) results.get('recent_run_count');
+                athlete.Recent_Run_Distance__c = (Decimal) results.get('recent_run_distance');
+                athlete.Recent_Run_Moving_Time__c = (Integer) results.get('recent_run_moving_time');
+                athlete.Recent_Run_Elapsed_Time__c = (Integer) results.get('recent_run_elapsed_time');
+                athlete.Recent_Run_Elevation_Gain__c = (Decimal) results.get('recent_run_elevation_gain');
+
+                athletesToUpdate.add(athlete);
             } else {
-                System.debug('Callout failed with status ' + res.getStatusCode() + ' ' + res.getStatus());
+                // Handle API callout errors
+                System.debug('API Callout failed with status code ' + res.getStatusCode() + ' for athlete with ID: ' + athlete.Id);
             }
+        }
+
+        // Update all athletes in one DML statement
+        if (!athletesToUpdate.isEmpty()) {
+            update athletesToUpdate;
         }
     }
 }

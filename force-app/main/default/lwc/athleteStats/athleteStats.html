@@ -4,6 +4,7 @@
         <template if:true={athletes}>
             <template for:each={athletes} for:item="athlete">
                 <div key={athlete.Id} class="athlete-card">
+                    <p>Name: {athlete.Name}</p>
                     <p>Biggest Ride Distance: {athlete.Biggest_Ride_Distance__c}</p>
                     <p>Biggest Climb Elevation Gain: {athlete.Biggest_Climb_Elevation_Gain__c}</p>
                     <p>Recent Ride Count: {athlete.Recent_Ride_Count__c}</p>
@@ -21,7 +22,7 @@
                     <p>Recent Run Distance: {athlete.Recent_Run_Distance__c}</p>
                     <p>Recent Run Moving Time: {athlete.Recent_Run_Moving_Time__c}</p>
                     <p>Recent Run Elapsed Time: {athlete.Recent_Run_Elapsed_Time__c}</p>
-                    <p>Recent Run Elevation Gain: {athlete.Recent_Run_Elapsed_Time__c}</p>
+                    <p>Recent Run Elevation Gain: {athlete.Recent_Run_Elevation_Gain__c}</p>
                 </div>
             </template>
         </template>

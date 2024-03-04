@@ -22,5 +22,10 @@ public with sharing class AthleteController {
                        Recent_Run_Elevation_Gain__c
                 FROM Athlete__c];
     }
-}
 
+    @AuraEnabled
+    public static void fetchAthleteStats(List<Athlete__c> athletes) {
+        // Call the static method from AthleteApiStats class to fetch and update stats
+        AthleteApiStats.getStats(athletes);
+    }
+}
