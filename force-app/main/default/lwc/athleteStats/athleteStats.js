@@ -2,6 +2,7 @@ import { LightningElement, wire } from 'lwc';
 import getAthletes from '@salesforce/apex/AthleteController.getAthletes';
 import { refreshApex } from '@salesforce/apex';
 import fetchAthleteStats from '@salesforce/apex/AthleteController.fetchAthleteStats';
+import insertAthletes from '@salesforce/apex/AthleteController.insertAthletes';
 
 export default class AthleteStatsComponent extends LightningElement {
     athletes = []; // List of Athlete__c records
@@ -32,6 +33,19 @@ export default class AthleteStatsComponent extends LightningElement {
             .catch(error => {
                 // Handle error
                 console.error('Error fetching athlete stats:', error);
+            });
+    }
+
+    // Method to insert athletes when button is clicked
+    insertAthletes() {
+        insertAthletes()
+            .then(() => {
+                // Success message or any other action
+                console.log('Athletes inserted successfully');
+            })
+            .catch(error => {
+                // Handle error
+                console.error('Error inserting athletes:', error);
             });
     }
 }

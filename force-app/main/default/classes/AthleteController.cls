@@ -1,4 +1,5 @@
 public with sharing class AthleteController {
+    
     @AuraEnabled(cacheable=true)
     public static List<Athlete__c> getAthletes() {
         return [SELECT Id, Name, 
@@ -28,4 +29,15 @@ public with sharing class AthleteController {
         // Call the static method from AthleteApiStats class to fetch and update stats
         AthleteApiStats.getStats(athletes);
     }
+
+    @AuraEnabled
+public static void insertAthletes(List<Athlete__c> newAthletes) {
+    // Check if newAthletes list is not null and not empty
+    if (newAthletes != null && !newAthletes.isEmpty()) {
+        insert newAthletes; // Perform the insert operation
+    } else {
+        System.debug('The newAthletes list is either null or empty.'); // Log a message for debugging
+    }
+}
+
 }
