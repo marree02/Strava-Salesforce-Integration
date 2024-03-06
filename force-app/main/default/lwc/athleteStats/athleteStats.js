@@ -1,7 +1,7 @@
 import { LightningElement, wire } from 'lwc';
 import getAthletes from '@salesforce/apex/AthleteController.getAthletes';
 import { refreshApex } from '@salesforce/apex';
-import fetchAthleteStats from '@salesforce/apex/AthleteApiStats.getStats';
+import fetchAthleteStats from '@salesforce/apex/AthleteController.fetchAthleteStats';
 
 export default class AthleteStatsComponent extends LightningElement {
     athletes = []; // List of Athlete__c records
@@ -14,20 +14,18 @@ export default class AthleteStatsComponent extends LightningElement {
         if (result.data) {
             // Store the fetched athletes in the component property
             this.athletes = result.data;
-
-            // Call the method to fetch stats from external API
-            this.fetchStats();
         } else if (result.error) {
             // Handle error
             console.error('Error fetching athletes:', result.error);
         }
     }
 
-    // Method to fetch stats from external API
-    fetchStats() {
-        fetchAthleteStats({ newAthletes: this.athletes })
+    // Method to fetch athlete stats from the Strava API
+    fetchAthleteStats() {
+        fetchAthleteStats({ athletes: this.athletes })
             .then(result => {
-                // Handle API response if needed
+                // Handle success if needed
+                console.log('Athlete stats fetched successfully');
                 // Refresh the wired Apex method result to update the UI
                 return refreshApex(this.wiredAthletesResult);
             })
@@ -35,11 +33,5 @@ export default class AthleteStatsComponent extends LightningElement {
                 // Handle error
                 console.error('Error fetching athlete stats:', error);
             });
-    }
-
-    // Method to handle button click for refreshing data
-    refreshData() {
-        // Call the method to fetch stats from external API
-        this.fetchStats();
     }
 }

@@ -1,6 +1,6 @@
 <template>
     <div class="container">
-        <lightning-button label="Refresh" onclick={refreshData}></lightning-button>
+        <lightning-button label="Fetch Athlete Stats" onclick={fetchAthleteStats}></lightning-button>
         <template if:true={athletes}>
             <template for:each={athletes} for:item="athlete">
                 <div key={athlete.Id} class="athlete-card">
