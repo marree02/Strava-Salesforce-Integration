@@ -1,7 +1,5 @@
 <template>
     <div class="container">
-        <lightning-button label="Fetch Athlete Stats" onclick={fetchAthleteStats}></lightning-button>
-        <lightning-button label="Insert Athletes" onclick={insertAthletes}></lightning-button>
         <template if:true={athletes}>
             <template for:each={athletes} for:item="athlete">
                 <div key={athlete.Id} class="athlete-card">
