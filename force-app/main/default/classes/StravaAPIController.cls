@@ -24,8 +24,9 @@ public class StravaAPIController implements Queueable {
             // Parse the JSON response
             Map<String, Object> data = (Map<String, Object>) JSON.deserializeUntyped(responseBody);
 
-            // Create a new Athlete__c record
-           Athlete__c athlete = [SELECT Id, Recent_Ride_Count__c, Recent_Ride_Distance__c, Recent_Ride_Moving_Time__c, Recent_Ride_Elapsed_Time__c, Recent_Ride_Elevation_Gain__c, Recent_Ride_Achievement_Count__c, All_Ride_Count__c, All_Ride_Distance__c, All_Ride_Moving_Time__c, All_Ride_Elapsed_Time__c, All_Ride_Elevation_Gain__c, Biggest_Ride_Distance__c, Biggest_Climb_Elevation_Gain__c FROM Athlete__c WHERE Id = :targetId LIMIT 1];
+            // update a new Athlete__c record
+        String targetId = 'a00av000000w6jSAAQ'; // Replace 'your_target_id_here' with the actual target ID
+        Athlete__c athlete = [SELECT Id, Recent_Ride_Count__c, Recent_Ride_Distance__c, Recent_Ride_Moving_Time__c, Recent_Ride_Elapsed_Time__c, Recent_Ride_Elevation_Gain__c, Recent_Ride_Achievement_Count__c, All_Ride_Count__c, All_Ride_Distance__c, All_Ride_Moving_Time__c, All_Ride_Elapsed_Time__c, All_Ride_Elevation_Gain__c, Biggest_Ride_Distance__c, Biggest_Climb_Elevation_Gain__c FROM Athlete__c WHERE Id = :targetId LIMIT 1];
 
 
             // Assign the values to the custom fields
