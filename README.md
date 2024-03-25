@@ -16,3 +16,7 @@ The `sfdx-project.json` file contains useful configuration information for your 
 - [Salesforce CLI Setup Guide](https://developer.salesforce.com/docs/atlas.en-us.sfdx_setup.meta/sfdx_setup/sfdx_setup_intro.htm)
 - [Salesforce DX Developer Guide](https://developer.salesforce.com/docs/atlas.en-us.sfdx_dev.meta/sfdx_dev/sfdx_dev_intro.htm)
 - [Salesforce CLI Command Reference](https://developer.salesforce.com/docs/atlas.en-us.sfdx_cli_reference.meta/sfdx_cli_reference/cli_reference.htm)
+
+## Strava API Documentation
+
+For details on the Strava API and how to integrate it with your Salesforce project, refer to the [Strava API Documentation](https://developers.strava.com/docs/reference/). This documentation provides information on authentication, endpoints, request parameters, and response formats.
