@@ -1,14 +1,37 @@
-# Salesforce DX Project: Next Steps
+# Strava Salesforce Integration
 
-Now that you’ve created a Salesforce DX project, what’s next? Here are some documentation resources to get you started.
+This project facilitates the integration of Strava athlete data into Salesforce. It leverages the Strava API to fetch athlete statistics such as ride and run totals and updates corresponding athlete records in Salesforce.
 
-## How Do You Plan to Deploy Your Changes?
+## Usage
 
-Do you want to deploy a set of changes, or create a self-contained application? Choose a [development model](https://developer.salesforce.com/tools/vscode/en/user-guide/development-models).
+### Setup Strava Authentication:
 
-## Configure Your Salesforce DX Project
+1. Obtain a Client ID and Client Secret from the Strava developer portal.
+2. Set up OAuth 2.0 authentication in Salesforce connected app settings, providing the Client ID and Client Secret.
 
-The `sfdx-project.json` file contains useful configuration information for your project. See [Salesforce DX Project Configuration](https://developer.salesforce.com/docs/atlas.en-us.sfdx_dev.meta/sfdx_dev/sfdx_dev_ws_config.htm) in the _Salesforce DX Developer Guide_ for details about this file.
+### Configure Salesforce Custom Object:
+
+1. Create a custom object named Athlete__c in Salesforce with fields to store athlete data.
+
+### Deploy Apex Classes:
+
+1. Deploy the StravaAPIController.cls and StravaTokenRefresher.cls Apex classes to your Salesforce org.
+
+### Execute Integration:
+
+1. Invoke the `makeStravaAPICall()` method in the StravaAPIController class to fetch athlete statistics from Strava and update corresponding Salesforce records.
+2. Ensure that the `accessToken` variable in the `makeStravaAPICall()` method contains a valid Strava access token.
+
+### Review Results:
+
+1. Check Salesforce athlete records to verify that the fetched statistics are updated.
+
+## Notes
+
+- This integration assumes familiarity with Salesforce Apex programming and Strava API authentication.
+- Ensure proper error handling and testing before deploying the integration to production environments.
+- For detailed documentation and troubleshooting, refer to the comments in the Apex classes and consult the Strava API and Salesforce developer documentation.
+
 
 ## Read All About It
 
