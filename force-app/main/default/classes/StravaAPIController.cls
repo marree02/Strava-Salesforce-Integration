@@ -7,7 +7,7 @@ public class StravaAPIController implements Queueable {
     @future(callout=true)
     public static void makeStravaAPICall() {
         String CLIENT_ID = '130827242';
-        String accessToken = '5860cb46f28b228b0cdb574f8e3233076ebcc44b'; 	
+        String accessToken = '1ad7ad8ef71688d737f96122192923dbb553a271'; 	
         String endpoint = 'https://www.strava.com/api/v3/athletes/' + CLIENT_ID + '/stats'; 
         HttpRequest req = new HttpRequest();
         req.setEndpoint(endpoint);
