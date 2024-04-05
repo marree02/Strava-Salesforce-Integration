@@ -2,9 +2,9 @@ public with sharing class StravaTokenRefresher {
 
     public void refreshTokenAndGetAthleteIds() {
         
-        String CLIENT_ID = '130827242';
-        String CLIENT_SECRET = '525ede17509bf58c1df9147a90abe1a31cfa6c41';
-        String ACCESS_TOKEN = '5860cb46f28b228b0cdb574f8e3233076ebcc44b';
+        String CLIENT_ID = '';
+        String CLIENT_SECRET = '';
+        String ACCESS_TOKEN = '';
      
         List<Athlete__c> athletes = [SELECT Biggest_Ride_Distance__c, Biggest_Climb_Elevation_Gain__c, Recent_Ride_Count__c, Recent_Ride_Distance__c, Recent_Ride_Moving_Time__c, Recent_Ride_Elapsed_Time__c, Recent_Ride_Elevation_Gain__c, Recent_Ride_Achievement_Count__c, All_Ride_Count__c, All_Ride_Distance__c, All_Ride_Moving_Time__c, All_Ride_Elapsed_Time__c, All_Ride_Elevation_Gain__c, Recent_Run_Count__c, Recent_Run_Distance__c, Recent_Run_Moving_Time__c, Recent_Run_Elapsed_Time__c, Recent_Run_Elevation_Gain__c FROM Athlete__c];
         List<Athlete__c> updatedAthletes = new List<Athlete__c>();
