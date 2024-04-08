@@ -1,55 +1,44 @@
 public with sharing class StravaTokenRefresher {
 
-    public void refreshTokenAndGetAthleteIds() {
+    public Map<String, Object> refreshTokenAndReturnNewTokenInfo() {
         
-        String CLIENT_ID = '';
-        String CLIENT_SECRET = '';
-        String ACCESS_TOKEN = '';
-     
-        List<Athlete__c> athletes = [SELECT Biggest_Ride_Distance__c, Biggest_Climb_Elevation_Gain__c, Recent_Ride_Count__c, Recent_Ride_Distance__c, Recent_Ride_Moving_Time__c, Recent_Ride_Elapsed_Time__c, Recent_Ride_Elevation_Gain__c, Recent_Ride_Achievement_Count__c, All_Ride_Count__c, All_Ride_Distance__c, All_Ride_Moving_Time__c, All_Ride_Elapsed_Time__c, All_Ride_Elevation_Gain__c, Recent_Run_Count__c, Recent_Run_Distance__c, Recent_Run_Moving_Time__c, Recent_Run_Elapsed_Time__c, Recent_Run_Elevation_Gain__c FROM Athlete__c];
-        List<Athlete__c> updatedAthletes = new List<Athlete__c>();
+        String CLIENT_ID = '120708';
+        String CLIENT_SECRET = '525ede17509bf58c1df9147a90abe1a31cfa6c41';
+        String REFRESH_TOKEN = '1ad7ad8ef71688d737f96122192923dbb553a271';
 
-        for (Athlete__c athlete : athletes) {
-            // Make a callout to the Strava API using the provided access token
-            HttpRequest athleteReq = new HttpRequest();
-            athleteReq.setEndpoint('https://www.strava.com/api/v3/athletes/' + CLIENT_ID + '/stats');
-            athleteReq.setMethod('GET');
-            athleteReq.setHeader('Authorization', 'Bearer ' + ACCESS_TOKEN);
+        String newAccessToken;
+        Integer expiresIn;
 
-            Http athleteHttp = new Http();
-            HttpResponse athleteRes = athleteHttp.send(athleteReq);
-            
-            if (athleteRes.getStatusCode() == 200) {
-                String responseBody = athleteRes.getBody();
-                System.debug(responseBody);
-                
-                Map<String, Object> results = (Map<String, Object>) JSON.deserializeUntyped(responseBody);
-                athlete.Biggest_Ride_Distance__c = (Decimal) results.get('biggest_ride_distance');
-                athlete.Biggest_Climb_Elevation_Gain__c = (Decimal) results.get('biggest_climb_elevation_gain');
-                athlete.Recent_Ride_Count__c = (Integer) results.get('recent_ride_count');
-                athlete.Recent_Ride_Distance__c = (Decimal) results.get('recent_ride_distance');
-                athlete.Recent_Ride_Moving_Time__c = (Integer) results.get('recent_ride_moving_time');
-                athlete.Recent_Ride_Elapsed_Time__c = (Integer) results.get('recent_ride_elapsed_time');
-                athlete.Recent_Ride_Elevation_Gain__c = (Decimal) results.get('recent_ride_elevation_gain');
-                athlete.Recent_Ride_Achievement_Count__c = (Integer) results.get('recent_ride_achievement_count');
-                athlete.All_Ride_Count__c = (Integer) results.get('all_ride_count');
-                athlete.All_Ride_Distance__c = (Decimal) results.get('all_ride_distance');
-                athlete.All_Ride_Moving_Time__c = (Integer) results.get('all_ride_moving_time');
-                athlete.All_Ride_Elapsed_Time__c = (Integer) results.get('all_ride_elapsed_time');
-                athlete.All_Ride_Elevation_Gain__c = (Decimal) results.get('all_ride_elevation_gain');
-                athlete.Recent_Run_Count__c = (Integer) results.get('recent_run_count');
-                athlete.Recent_Run_Distance__c = (Decimal) results.get('recent_run_distance');
-                athlete.Recent_Run_Moving_Time__c = (Integer) results.get('recent_run_moving_time');
-                athlete.Recent_Run_Elapsed_Time__c = (Integer) results.get('recent_run_elapsed_time');
-                athlete.Recent_Run_Elevation_Gain__c = (Decimal) results.get('recent_run_elevation_gain');
-                updatedAthletes.add(athlete);
-            } else {
-                // Handle API callout error
-                System.debug('API Callout failed with status code ' + athleteRes.getStatusCode());
-            }
+        // Make a callout to the Strava API using the provided access token
+        HttpRequest athleteReq = new HttpRequest();
+        athleteReq.setEndpoint('https://www.strava.com/oauth/token');
+        athleteReq.setMethod('POST');
+        athleteReq.setHeader('client_id:'+ CLIENT_ID);
+        athleteReq.setHeader('client_secret:'+ CLIENT_SECRET);
+        athleteReq.setHeader('grant_type:'+ REFRESH_TOKEN);
+        athleteReq.setHeader('refresh_token:'+ REFRESH_TOKEN);
+
+        Http athleteHttp = new Http();
+        HttpResponse athleteRes = athleteHttp.send(athleteReq);
+
+        System.debug('Response Body: ' + athleteRes.getBody());
+        System.debug('Response Status: ' + athleteRes.getStatus());
+        // Parse the JSON response and receive the new access token
+        if (athleteRes.getStatusCode() == 200) {
+            System.debug('Success');
+            String responseBody = athleteRes.getBody();
+            Map<String, Object> results = (Map<String, Object>) JSON.deserializeUntyped(responseBody);
+            newAccessToken = (String) results.get('access_token');
+            expiresIn = (Integer) results.get('expires_in');
+        } else {
+            System.debug('Failed');
         }
-        if (!updatedAthletes.isEmpty()) {
-            upsert updatedAthletes;
-        }
+        
+        // Create a map to hold the new access token and the expiration time
+        Map<String, Object> tokenInfo = new Map<String, Object>();
+        tokenInfo.put('newAccessToken', newAccessToken);
+        tokenInfo.put('expiresIn', expiresIn);
+        
+        return newAccessToken;
     } 
 }

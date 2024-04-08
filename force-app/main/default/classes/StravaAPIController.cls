@@ -1,13 +1,15 @@
 public class StravaAPIController implements Queueable {
 
     public void execute(QueueableContext context) {
-        makeStravaAPICall();
-    }
+        String newAccessToken = StravaTokenRefresher.refreshTokenAndReturnNewTokenInfo();
 
+        makeStravaAPICall(newAccessToken);
+    }
     @future(callout=true)
-    public static void makeStravaAPICall() {
+    public static void makeStravaAPICall(String accessToken) {
+        
         String CLIENT_ID = '130827242';
-        String accessToken = '1ad7ad8ef71688d737f96122192923dbb553a271'; 	
+        /* String accessToken = '1ad7ad8ef71688d737f96122192923dbb553a271'; */ 	
         String endpoint = 'https://www.strava.com/api/v3/athletes/' + CLIENT_ID + '/stats'; 
         HttpRequest req = new HttpRequest();
         req.setEndpoint(endpoint);
