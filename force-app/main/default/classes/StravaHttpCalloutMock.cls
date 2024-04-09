@@ -3,7 +3,7 @@ global class StravaHttpCalloutMock implements HttpCalloutMock {
     global HTTPResponse respond(HTTPRequest req) {
         HttpResponse res = new HttpResponse();
         res.setHeader('Content-Type', 'application/json');
-        res.setBody('{"recent_ride_totals": {"count": 10, "distance": 100, "moving_time": 1000, "elapsed_time": 1000, "elevation_gain": 100, "achievement_count": 10}, "all_ride_totals": {"count": 10, "distance": 100, "moving_time": 1000, "elapsed_time": 1000, "elevation_gain": 100}, "biggest_ride_distance": 100, "biggest_climb_elevation_gain": 100}');
+        res.setBody('{"recent_ride_totals": {"count": 2.00, "distance": 19566.3291015625, "moving_time": 3455.00, "elapsed_time": 4185, "elevation_gain": 145.70810317993164, "achievement_count": 0}, "all_ride_totals": {"count": 2.00, "distance": 19566.00, "moving_time": 3455, "elapsed_time": 4185, "elevation_gain": 146}, "biggest_ride_distance": 11388.2, "biggest_climb_elevation_gain": null}');
         res.setStatusCode(200);
         return res;
     }
