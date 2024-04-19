@@ -10,17 +10,71 @@ public class StravaAPIController implements Queueable {
         makeStravaAPICall(stravaAthleteId);
     }
 
-    @Future(callout=true)
-    public static void makeStravaAPICall(String stravaAthleteId) {
+    public void makeStravaAPICall(String stravaAthleteId) {
         Map<String, Object> data;
         try {
-            HttpRequest req = new HttpRequest();
-            String endpoint = 'callout:Strava_Named_Credential/athletes/' + stravaAthleteId + '/stats';        
-            req.setEndpoint(endpoint);
-            req.setMethod('GET');
-        
+
+
+            // Get Custom Metadata containing refresh token parameters
+
+            Strava_Refresh_Token__mdt stravaRefreshTokenConfig = Strava_Refresh_Token__mdt.getInstance('m00av000001MYVVAA4');
+
+            // Get the access token
+
+            String CLIENT_ID = stravaRefreshTokenConfig.client_id__c;
+            String CLIENT_SECRET = stravaRefreshTokenConfig.client_secret__c;
+            String GRANT_TYPE = stravaRefreshTokenConfig.grant_type__c;
+            String REFRESH_TOKEN = stravaRefreshTokenConfig.refresh_token__c;
+
+            String endpoint = 'https://www.strava.com/api/v3/oauth/token' + '?client_id=' + CLIENT_ID + '&client_secret=' + CLIENT_SECRET + '&grant_type=' + GRANT_TYPE + '&refresh_token=' + REFRESH_TOKEN;
+
             Http http = new Http();
-            HttpResponse res = http.send(req);
+            HttpRequest refreshReq = new HttpRequest();
+            refreshReq.setEndpoint(endpoint);
+            refreshReq.setMethod('POST');
+
+            HttpResponse tokenRes = http.send(refreshReq);
+
+            System.debug(tokenRes.getBody());
+
+            Map<String, Object> tokenData = (Map<String, Object>) JSON.deserializeUntyped(tokenRes.getBody());
+
+            String accessToken;
+            if (tokenData.containsKey('access_token')) {
+                accessToken = (String) tokenData.get('access_token');
+            }
+
+            System.debug('Access Token: ' + accessToken);
+
+
+            for (Account acc : AccountFromSF) {
+                
+            }
+
+            /* String accessToken = '1ad7ad8ef71688d737f96122192923dbb553a271'; */ 	
+            String athleteEndpoint = 'https://www.strava.com/api/v3/athletes/' + stravaAthleteId + '/stats'; 
+            HttpRequest athleteReq = new HttpRequest();
+            athleteReq.setEndpoint(athleteEndpoint);
+            athleteReq.setMethod('GET');
+            athleteReq.setHeader('Authorization', 'Bearer ' + accessToken); // Include the access token in the request headers
+    
+            Http httpToken = new Http();
+            HttpResponse res = httpToken.send(athleteReq);
+
+            // Make the API call
+
+
+
+
+
+            // HttpRequest req = new HttpRequest();
+            // String endpoint = 'callout:Strava_Named_Credential/athletes/' + stravaAthleteId + '/stats';        
+            // req.setEndpoint(endpoint);
+            // req.setHeader('Authorization', 'Bearer ' + accessToken); // Include the access token in the request headers
+            // req.setMethod('GET');
+        
+            // Http http = new Http();
+            // HttpResponse res = http.send(req);
         
             if (res.getStatusCode() == 200) {
                 String responseBody = res.getBody();
