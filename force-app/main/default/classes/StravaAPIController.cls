@@ -1,87 +1,60 @@
-public class StravaAPIController implements Queueable {
-
+public class StravaAPIController implements Schedulable {
+    private final String JOB_NAME = 'Strava Repeating Job';
+    private final Integer TEN_MINUTES = 10; // Update to execute every 10 minutes
     private String stravaAthleteId;
 
+    // Constructor
     public StravaAPIController(String stravaAthleteId) {
         this.stravaAthleteId = stravaAthleteId;
     }
 
-    public void execute(QueueableContext context) {
+    // Execute method called by the scheduler
+    public void execute(SchedulableContext cont) {
         makeStravaAPICall(stravaAthleteId);
+        findAndAbortJob(cont);
     }
 
+    // Main logic to make the API Call
     public void makeStravaAPICall(String stravaAthleteId) {
         Map<String, Object> data;
         try {
-
-
-            // Get Custom Metadata containing refresh token parameters
-
+            // Obtain refresh token configuration from custom metadata
             Strava_Refresh_Token__mdt stravaRefreshTokenConfig = Strava_Refresh_Token__mdt.getInstance('m00av000001MYVVAA4');
-
-            // Get the access token
-
             String CLIENT_ID = stravaRefreshTokenConfig.client_id__c;
             String CLIENT_SECRET = stravaRefreshTokenConfig.client_secret__c;
             String GRANT_TYPE = stravaRefreshTokenConfig.grant_type__c;
             String REFRESH_TOKEN = stravaRefreshTokenConfig.refresh_token__c;
 
-            String endpoint = 'https://www.strava.com/api/v3/oauth/token' + '?client_id=' + CLIENT_ID + '&client_secret=' + CLIENT_SECRET + '&grant_type=' + GRANT_TYPE + '&refresh_token=' + REFRESH_TOKEN;
+            // Construct the endpoint for refreshing the access token
+            String endpoint = 'https://www.strava.com/api/v3/oauth/token' +
+                              '?client_id=' + CLIENT_ID +
+                              '&client_secret=' + CLIENT_SECRET +
+                              '&grant_type=' + GRANT_TYPE +
+                              '&refresh_token=' + REFRESH_TOKEN;
 
             Http http = new Http();
             HttpRequest refreshReq = new HttpRequest();
             refreshReq.setEndpoint(endpoint);
             refreshReq.setMethod('POST');
-
             HttpResponse tokenRes = http.send(refreshReq);
 
-            System.debug(tokenRes.getBody());
-
+            // Parse the JSON response to retrieve the access token
             Map<String, Object> tokenData = (Map<String, Object>) JSON.deserializeUntyped(tokenRes.getBody());
+            String accessToken = tokenData.containsKey('access_token') ? (String) tokenData.get('access_token') : null;
 
-            String accessToken;
-            if (tokenData.containsKey('access_token')) {
-                accessToken = (String) tokenData.get('access_token');
-            }
-
-            System.debug('Access Token: ' + accessToken);
-
-
-            for (Account acc : AccountFromSF) {
-                
-            }
-
-            /* String accessToken = '1ad7ad8ef71688d737f96122192923dbb553a271'; */ 	
-            String athleteEndpoint = 'https://www.strava.com/api/v3/athletes/' + stravaAthleteId + '/stats'; 
+            // Use the access token to call the Strava API for athlete stats
+            String athleteEndpoint = 'https://www.strava.com/api/v3/athletes/' + stravaAthleteId + '/stats';
             HttpRequest athleteReq = new HttpRequest();
             athleteReq.setEndpoint(athleteEndpoint);
             athleteReq.setMethod('GET');
-            athleteReq.setHeader('Authorization', 'Bearer ' + accessToken); // Include the access token in the request headers
-    
-            Http httpToken = new Http();
-            HttpResponse res = httpToken.send(athleteReq);
+            athleteReq.setHeader('Authorization', 'Bearer ' + accessToken);
 
-            // Make the API call
+            HttpResponse res = http.send(athleteReq);
 
-
-
-
-
-            // HttpRequest req = new HttpRequest();
-            // String endpoint = 'callout:Strava_Named_Credential/athletes/' + stravaAthleteId + '/stats';        
-            // req.setEndpoint(endpoint);
-            // req.setHeader('Authorization', 'Bearer ' + accessToken); // Include the access token in the request headers
-            // req.setMethod('GET');
-        
-            // Http http = new Http();
-            // HttpResponse res = http.send(req);
-        
             if (res.getStatusCode() == 200) {
                 String responseBody = res.getBody();
-                System.debug('Response Body: ' + responseBody);
-        
-                // Parse the JSON response
                 data = (Map<String, Object>) JSON.deserializeUntyped(responseBody);
+                updateAthleteData(data);
             } else {
                 System.debug('HTTP response status: ' + res.getStatusCode());
                 System.debug('HTTP response body: ' + res.getBody());
@@ -89,16 +62,15 @@ public class StravaAPIController implements Queueable {
         } catch (Exception e) {
             System.debug('Exception during callout: ' + e.getMessage());
         }
+    }
 
+    // Method to update athlete data in Salesforce
+    private void updateAthleteData(Map<String, Object> data) {
         if (data != null) {
-            // Query the athlete record
-            Id sfAthleteId = 'a00av000000w6jTAAQ'; // replace with your actual Salesforce athlete Id
+            Id sfAthleteId = 'a00av000000w6jTAAQ';
             Athlete__c athlete = [SELECT Id, Recent_Ride_Count__c, Recent_Ride_Distance__c, Recent_Ride_Moving_Time__c, Recent_Ride_Elapsed_Time__c, Recent_Ride_Elevation_Gain__c, Recent_Ride_Achievement_Count__c, All_Ride_Count__c, All_Ride_Distance__c, All_Ride_Moving_Time__c, All_Ride_Elapsed_Time__c, All_Ride_Elevation_Gain__c, Biggest_Ride_Distance__c, Biggest_Climb_Elevation_Gain__c FROM Athlete__c WHERE Id = :sfAthleteId LIMIT 1];
-    
-            // Debug the athlete record before updating
-            System.debug('Athlete record before update: ' + athlete);
 
-            // Assign the values to the custom fields
+            // Mapping data from API response to Salesforce fields
             Map<String, Object> recentRideTotals = (Map<String, Object>) data.get('recent_ride_totals');
             athlete.Recent_Ride_Count__c = (Decimal) recentRideTotals.get('count');
             athlete.Recent_Ride_Distance__c = (Decimal) recentRideTotals.get('distance');
@@ -116,17 +88,36 @@ public class StravaAPIController implements Queueable {
 
             athlete.Biggest_Ride_Distance__c = (Decimal) data.get('biggest_ride_distance');
             athlete.Biggest_Climb_Elevation_Gain__c = (Decimal) data.get('biggest_climb_elevation_gain');
-
-            // Update the record
             update athlete;
-
-            // Query the athlete record after updating
-            Athlete__c updatedAthlete = [SELECT Id, Recent_Ride_Count__c, Recent_Ride_Distance__c, Recent_Ride_Moving_Time__c, Recent_Ride_Elapsed_Time__c, Recent_Ride_Elevation_Gain__c, Recent_Ride_Achievement_Count__c, All_Ride_Count__c, All_Ride_Distance__c, All_Ride_Moving_Time__c, All_Ride_Elapsed_Time__c, All_Ride_Elevation_Gain__c, Biggest_Ride_Distance__c, Biggest_Climb_Elevation_Gain__c FROM Athlete__c WHERE Id = :sfAthleteId LIMIT 1];
-
-            // Debug the athlete record after updating
-            System.debug('Athlete record after update: ' + updatedAthlete);
-        } else {
-            System.debug('Failed to make Strava API call.');
         }
     }
+
+    // Abort the current job and schedule a new one
+    private void findAndAbortJob(SchedulableContext cont) {
+        List<CronJobDetail> cronDetail = [SELECT Id FROM CronJobDetail WHERE Name = :JOB_NAME LIMIT 1];
+        if (cronDetail.isEmpty()) {
+            return;
+        }
+
+        List<CronTrigger> cronTriggers = [SELECT Id FROM CronTrigger WHERE CronJobDetailId = :cronDetail[0].Id];
+        if (cronTriggers.isEmpty()) {
+            return;
+        }
+
+        System.abortJob(cronTriggers[0].Id);
+        rescheduleJob();
+    }
+
+    // Schedule the next execution of this job
+    private void rescheduleJob() {
+        Datetime sysTime = System.now().addMinutes(TEN_MINUTES);
+        String cronExpression = '' + sysTime.second() + ' ' + sysTime.minute() + ' ' + sysTime.hour() + ' ' + sysTime.day() + ' ' + sysTime.month() + ' ? ' + sysTime.year();
+        System.schedule(JOB_NAME + sysTime.getTime(), cronExpression, new StravaAPIController(stravaAthleteId));
+    }
 }
+//String stravaAthleteId = '130827242';
+//String JOB_NAME = 'Strava Repeating Job';
+//Integer TEN_MINUTES = 10;
+//Datetime sysTime = System.now().addMinutes(TEN_MINUTES);
+//String cronExpression = '' + sysTime.second() + ' ' + sysTime.minute() + ' ' + sysTime.hour() + ' ' + sysTime.day() + ' ' + sysTime.month() + ' ? ' + sysTime.year();
+//System.schedule(JOB_NAME, cronExpression, new StravaAPIController(stravaAthleteId));

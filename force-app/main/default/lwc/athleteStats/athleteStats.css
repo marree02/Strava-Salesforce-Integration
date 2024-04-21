@@ -1,0 +1,13 @@
+.slds-progress-bar_circular {
+    --slds-progress-ring-width: 0.5rem;
+    --slds-progress-ring-color-background: #ecebea;
+    --slds-progress-ring-color-background-fill: #9edaa8;
+    --slds-progress-ring-content-percentage: 0%;
+}
+
+.slds-progress-bar__value {
+    font-size: 1rem;
+    font-weight: bold;
+    color: #0070d2;
+    padding: 0.5rem;
+}
