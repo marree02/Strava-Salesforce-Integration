@@ -93,20 +93,31 @@ public class StravaAPIController implements Schedulable {
     }
 
     // Abort the current job and schedule a new one
-    private void findAndAbortJob(SchedulableContext cont) {
-        List<CronJobDetail> cronDetail = [SELECT Id FROM CronJobDetail WHERE Name = :JOB_NAME LIMIT 1];
-        if (cronDetail.isEmpty()) {
-            return;
-        }
+   private void findAndAbortJob(SchedulableContext cont) {
+    if (cont == null) {
+        System.debug('SchedulableContext is null');
+        return;
+    }
 
-        List<CronTrigger> cronTriggers = [SELECT Id FROM CronTrigger WHERE CronJobDetailId = :cronDetail[0].Id];
-        if (cronTriggers.isEmpty()) {
-            return;
-        }
+    List<CronJobDetail> cronDetail = [SELECT Id FROM CronJobDetail WHERE Name= :JOB_NAME LIMIT 1];
+    if (cronDetail.isEmpty()) {
+        System.debug('No CronJobDetail found for job name: ' + JOB_NAME);
+        return;
+    }
 
+    List<CronTrigger> cronTriggers = [SELECT Id FROM CronTrigger WHERE CronJobDetailId = :cronDetail[0].Id];
+    if(cronTriggers.isEmpty()) {
+        System.debug('No CronTrigger found for CronJobDetailId: ' + cronDetail[0].Id);
+        return;
+    }
+
+    try {
         System.abortJob(cronTriggers[0].Id);
         rescheduleJob();
+    } catch (Exception e) {
+        System.debug('Error aborting job: ' + e.getMessage());
     }
+}
 
     // Schedule the next execution of this job
     private void rescheduleJob() {
@@ -115,9 +126,7 @@ public class StravaAPIController implements Schedulable {
         System.schedule(JOB_NAME + sysTime.getTime(), cronExpression, new StravaAPIController(stravaAthleteId));
     }
 }
-//String stravaAthleteId = '130827242';
-//String JOB_NAME = 'Strava Repeating Job';
-//Integer TEN_MINUTES = 10;
-//Datetime sysTime = System.now().addMinutes(TEN_MINUTES);
-//String cronExpression = '' + sysTime.second() + ' ' + sysTime.minute() + ' ' + sysTime.hour() + ' ' + sysTime.day() + ' ' + sysTime.month() + ' ? ' + sysTime.year();
-//System.schedule(JOB_NAME, cronExpression, new StravaAPIController(stravaAthleteId));
+// String cronExp = '0 0,10,20,30,40,50 * * * ?'; // Every 10 minutes
+//StravaAPIController job = new StravaAPIController('130827242');
+//String jobId = System.schedule('Strava Repeating Job', cronExp, job);
+//System.debug('Scheduled Job ID: ' + jobId);
