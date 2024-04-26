@@ -1,6 +1,6 @@
 public class StravaAPIController implements Schedulable {
     private final String JOB_NAME = 'Strava Repeating Job';
-    private final Integer TEN_MINUTES = 3; // Update to execute every 10 minutes
+    private final Integer TEN_MINUTES = 10; // Update to execute every 10 minutes
     private String stravaAthleteId;
 
     // Constructor
@@ -15,7 +15,8 @@ public class StravaAPIController implements Schedulable {
     }
 
     // Main logic to make the API Call
-    public void makeStravaAPICall(String stravaAthleteId) {
+    @future(callout=true)
+    public static void makeStravaAPICall(String stravaAthleteId) {
         Map<String, Object> data;
         try {
             // Obtain refresh token configuration from custom metadata
@@ -72,7 +73,7 @@ public class StravaAPIController implements Schedulable {
     }
 
     // Method to update athlete data in Salesforce
-    private void updateAthleteData(Map<String, Object> data) {
+    private static void updateAthleteData(Map<String, Object> data) {
         if (data != null) {
             Id sfAthleteId = 'a00av000000w6jTAAQ';
             Athlete__c athlete = [SELECT Id, Recent_Ride_Count__c, Recent_Ride_Distance__c, Recent_Ride_Moving_Time__c, Recent_Ride_Elapsed_Time__c, Recent_Ride_Elevation_Gain__c, Recent_Ride_Achievement_Count__c, All_Ride_Count__c, All_Ride_Distance__c, All_Ride_Moving_Time__c, All_Ride_Elapsed_Time__c, All_Ride_Elevation_Gain__c, Biggest_Ride_Distance__c, Biggest_Climb_Elevation_Gain__c FROM Athlete__c WHERE Id = :sfAthleteId LIMIT 1];
