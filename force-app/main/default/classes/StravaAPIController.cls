@@ -1,6 +1,6 @@
 public class StravaAPIController implements Schedulable {
     private final String JOB_NAME = 'Strava Repeating Job';
-    private final Integer TEN_MINUTES = 10; // Update to execute every 10 minutes
+    private final Integer TEN_MINUTES = 3; // Update to execute every 10 minutes
     private String stravaAthleteId;
 
     // Constructor
@@ -53,6 +53,13 @@ public class StravaAPIController implements Schedulable {
 
             if (res.getStatusCode() == 200) {
                 String responseBody = res.getBody();
+
+                // Check if the response size is too large
+            if(responseBody.length() > 6000000) {
+                System.debug('Response size is too large');
+                return;
+            }
+                
                 data = (Map<String, Object>) JSON.deserializeUntyped(responseBody);
                 updateAthleteData(data);
             } else {
@@ -96,26 +103,30 @@ public class StravaAPIController implements Schedulable {
    private void findAndAbortJob(SchedulableContext cont) {
     if (cont == null) {
         System.debug('SchedulableContext is null');
+        rescheduleJob();// Reschedule the job if the context is null
         return;
     }
 
     List<CronJobDetail> cronDetail = [SELECT Id FROM CronJobDetail WHERE Name= :JOB_NAME LIMIT 1];
     if (cronDetail.isEmpty()) {
         System.debug('No CronJobDetail found for job name: ' + JOB_NAME);
+        rescheduleJob();// Reschedule the job if the CronJobDetail is not found
         return;
     }
 
     List<CronTrigger> cronTriggers = [SELECT Id FROM CronTrigger WHERE CronJobDetailId = :cronDetail[0].Id];
     if(cronTriggers.isEmpty()) {
         System.debug('No CronTrigger found for CronJobDetailId: ' + cronDetail[0].Id);
+        rescheduleJob();// Reschedule the job if the CronTrigger is not found
         return;
     }
 
     try {
         System.abortJob(cronTriggers[0].Id);
-        rescheduleJob();
     } catch (Exception e) {
         System.debug('Error aborting job: ' + e.getMessage());
+    }finally {
+        rescheduleJob(); // Reschedule the job even if an exception occurs while aborting it
     }
 }
 
