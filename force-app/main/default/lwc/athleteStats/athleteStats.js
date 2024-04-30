@@ -21,4 +21,7 @@ export default class AthleteStatsComponent extends LightningElement {
     filterAthletes(data) {
         this.athletes = data.filter(athlete => athlete.Name === 'a00av000000w6jS');
     }
+
+
+    
 }

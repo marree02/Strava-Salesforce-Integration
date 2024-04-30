@@ -1,4 +1,4 @@
-public class StravaAPIController implements Schedulable {
+public with sharing class StravaAPIController implements Schedulable {
     private final String JOB_NAME = 'Strava Repeating Job';
     private final Integer TEN_MINUTES = 10; // Update to execute every 10 minutes
     private String stravaAthleteId;
@@ -54,7 +54,20 @@ public class StravaAPIController implements Schedulable {
 
             if (res.getStatusCode() == 200) {
                 String responseBody = res.getBody();
-
+               // Check if the current user has the necessary permissions
+                if (Schema.sObjectType.AccessToken__c.isAccessible() &&
+                Schema.sObjectType.AccessToken__c.isUpdateable()) {
+                AccessToken__c accessTokenSetting = AccessToken__c.getInstance('m00av000001MYVVAA4');
+                if (accessTokenSetting == null) {
+                    accessTokenSetting = new AccessToken__c();
+                    accessTokenSetting.Name = 'm00av000001MYVVAA4';
+                }
+                accessTokenSetting.AccessToken__c = accessToken;
+                upsert accessTokenSetting;
+                } else {
+                System.debug('Current user does not have the necessary permissions to access and update AccessToken__c');
+                }
+        
                 // Check if the response size is too large
             if(responseBody.length() > 6000000) {
                 System.debug('Response size is too large');
