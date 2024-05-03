@@ -1,13 +1,20 @@
-.slds-progress-bar_circular {
-    --slds-progress-ring-width: 0.5rem;
-    --slds-progress-ring-color-background: #ecebea;
-    --slds-progress-ring-color-background-fill: #9edaa8;
-    --slds-progress-ring-content-percentage: 0%;
+.container {
+    padding: 1rem;
 }
 
-.slds-progress-bar__value {
+.container img {
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.container h2 {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+}
+
+.container p {
     font-size: 1rem;
-    font-weight: bold;
-    color: #0070d2;
-    padding: 0.5rem;
+    margin-bottom: 0.5rem;
 }

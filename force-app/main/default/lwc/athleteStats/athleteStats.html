@@ -1,51 +1,41 @@
 <template>
     <div class="container slds-card slds-var-m-around_medium">
-        <template if:true={athletes}>
-            <template for:each={athletes} for:item="athlete">
-                <div key={athlete.Id} class="slds-card__body">
-                    <h2 class="slds-text-heading_large">{athlete.Name}</h2>
-                    <div class="slds-grid slds-wrap">
-                        <div class="slds-col slds-size_1-of-2 slds-var-p-around_medium">
-                            <h3 class="slds-text-heading_small slds-var-m-bottom_small">Biggest</h3>
-                            <p class="slds-text-body_regular">Ride Distance: {athlete.Biggest_Ride_Distance__c} km</p>
-                            <p class="slds-text-body_regular">Climb Elevation Gain: {athlete.Biggest_Climb_Elevation_Gain__c} m</p>
-                        </div>
-                        <div class="slds-col slds-size_1-of-2 slds-var-p-around_medium">
-                            <h3 class="slds-text-heading_small slds-var-m-bottom_small">Recent Rides</h3>
-                            <p class="slds-text-body_regular">Count: {athlete.Recent_Ride_Count__c}</p>
-                            <p class="slds-text-body_regular">Distance: {athlete.Recent_Ride_Distance__c} km</p>
-                            <p class="slds-text-body_regular">Moving Time: {athlete.Recent_Ride_Moving_Time__c} mins</p>
-                            <p class="slds-text-body_regular">Elapsed Time: {athlete.Recent_Ride_Elapsed_Time__c} mins</p>
-                            <p class="slds-text-body_regular">Elevation Gain: {athlete.Recent_Ride_Elevation_Gain__c} m</p>
-                            <p class="slds-text-body_regular">Achievement Count: {athlete.Recent_Ride_Achievement_Count__c}</p>
-                        </div>
-                    </div>
-                    <div class="slds-grid slds-wrap">
-                        <div class="slds-col slds-size_1-of-2 slds-var-p-around_medium">
-                            <h3 class="slds-text-heading_small slds-var-m-bottom_small">All Rides</h3>
-                            <p class="slds-text-body_regular">Count: {athlete.All_Ride_Count__c}</p>
-                            <p class="slds-text-body_regular">Distance: {athlete.All_Ride_Distance__c} km</p>
-                            <p class="slds-text-body_regular">Moving Time: {athlete.All_Ride_Moving_Time__c} mins</p>
-                            <p class="slds-text-body_regular">Elapsed Time: {athlete.All_Ride_Elapsed_Time__c} mins</p>
-                            <p class="slds-text-body_regular">Elevation Gain: {athlete.All_Ride_Elevation_Gain__c} m</p>
-                        </div>
-                        <div class="slds-col slds-size_1-of-2 slds-var-p-around_medium">
-                            <h3 class="slds-text-heading_small slds-var-m-bottom_small">Recent Runs</h3>
-                            <p class="slds-text-body_regular">Count: {athlete.Recent_Run_Count__c}</p>
-                            <p class="slds-text-body_regular">Distance: {athlete.Recent_Run_Distance__c} km</p>
-                            <p class="slds-text-body_regular">Moving Time: {athlete.Recent_Run_Moving_Time__c} mins</p>
-                            <p class="slds-text-body_regular">Elapsed Time: {athlete.Recent_Run_Elapsed_Time__c} mins</p>
-                            <p class="slds-text-body_regular">Elevation Gain: {athlete.Recent_Run_Elevation_Gain__c} m</p>
-                        </div>
-                    </div>
-                     <div class="slds-col slds-size_1-of-1 slds-var-p-around_medium">
-                            <h3 class="slds-text-heading_small">Motivation Corner</h3>
-                            <p class="slds-text-body_regular">{bikeRideMotivation}</p>
-                            <p class="slds-text-body_regular">{runMotivation}</p>
-                        </div>
-                    </div>
-                </div>
-            </template>
-        </template>
+        <div class="slds-card__body">
+            <h2 class="slds-text-heading_large">{athlete.data.fields.Name.value}</h2>
+            <img src={athlete.data.fields.Profile_Picture__c.value} alt="Profile Picture" width="200" height="200">
+            <p class="slds-text-body_regular">First Name: {athlete.data.fields.First_Name__c.value}</p>
+            <p class="slds-text-body_regular">Last Name: {athlete.data.fields.Last_Name__c.value}</p>
+            <p class="slds-text-body_regular">City: {athlete.data.fields.City__c.value}</p>
+            <p class="slds-text-body_regular">Country: {athlete.data.fields.Country__c.value}</p>
+        </div>
+        <div class="slds-grid slds-wrap">
+            <div class="slds-col slds-size_1-of-2 slds-var-p-around_medium">
+                <h3 class="slds-text-heading_small slds-var-m-bottom_small">Recent Rides</h3>
+                <p class="slds-text-body_regular">Count: {athlete.Recent_Ride_Count__c}</p>
+                <p class="slds-text-body_regular">Distance: {athlete.Recent_Ride_Distance__c} km</p>
+                <p class="slds-text-body_regular">Moving Time: {athlete.Recent_Ride_Moving_Time__c} mins</p>
+                <p class="slds-text-body_regular">Elapsed Time: {athlete.Recent_Ride_Elapsed_Time__c} mins</p>
+                <p class="slds-text-body_regular">Elevation Gain: {athlete.Recent_Ride_Elevation_Gain__c} m</p>
+                <p class="slds-text-body_regular">Achievement Count: {athlete.Recent_Ride_Achievement_Count__c}</p>
+            </div>
+        </div>
+        <div class="slds-grid slds-wrap">
+            <div class="slds-col slds-size_1-of-2 slds-var-p-around_medium">
+                <h3 class="slds-text-heading_small slds-var-m-bottom_small">All Rides</h3>
+                <p class="slds-text-body_regular">Count: {athlete.All_Ride_Count__c}</p>
+                <p class="slds-text-body_regular">Distance: {athlete.All_Ride_Distance__c} km</p>
+                <p class="slds-text-body_regular">Moving Time: {athlete.All_Ride_Moving_Time__c} mins</p>
+                <p class="slds-text-body_regular">Elapsed Time: {athlete.All_Ride_Elapsed_Time__c} mins</p>
+                <p class="slds-text-body_regular">Elevation Gain: {athlete.All_Ride_Elevation_Gain__c} m</p>
+            </div>
+            <div class="slds-col slds-size_1-of-2 slds-var-p-around_medium">
+                <h3 class="slds-text-heading_small slds-var-m-bottom_small">Recent Runs</h3>
+                <p class="slds-text-body_regular">Count: {athlete.Recent_Run_Count__c}</p>
+                <p class="slds-text-body_regular">Distance: {athlete.Recent_Run_Distance__c} km</p>
+                <p class="slds-text-body_regular">Moving Time: {athlete.Recent_Run_Moving_Time__c} mins</p>
+                <p class="slds-text-body_regular">Elapsed Time: {athlete.Recent_Run_Elapsed_Time__c} mins</p>
+                <p class="slds-text-body_regular">Elevation Gain: {athlete.Recent_Run_Elevation_Gain__c} m</p>
+            </div>
+        </div>
     </div>
 </template>

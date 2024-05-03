@@ -9,11 +9,11 @@ public with sharing class StravaAthleteInfoController implements Schedulable {
         Strava_refresh_token__mdt StravaAccessToken = Strava_refresh_token__mdt.getInstance('m00av000001MYVVAA4');
         String accessToken = StravaAccessToken.accesstoken__c;
 
-        String endpoint = 'https://www.strava.com/api/v3/athletes';
+        String endpoint = 'https://www.strava.com/api/v3/athlete';
         HttpRequest req = new HttpRequest();
         req.setEndpoint(endpoint);
         req.setMethod('GET');
-        req.setHeader('Authorization', 'Bearer ' + accessToken);
+        req.setHeader('Authorization', 'Bearer ' + 'd50c944672964ebfd963f2e004a7c1e851ceffa1');
 
         Http http = new Http();
         HttpResponse res = http.send(req);

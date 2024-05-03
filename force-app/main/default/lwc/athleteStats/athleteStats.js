@@ -1,27 +1,21 @@
-import { LightningElement, wire } from 'lwc';
-import getAthletes from '@salesforce/apex/AthleteController.getAthletes';
+import { LightningElement, wire, track } from 'lwc';
+import { getRecord } from 'lightning/uiRecordApi';
 
-export default class AthleteStatsComponent extends LightningElement {
-    athletes = []; // List of Athlete__c records
-    wiredAthletesResult; // Reference to the wired Apex method result
+export default class AthleteStats extends LightningElement {
+    @track athlete;
+    @track error;
 
-    // Call the Apex method to fetch athletes from Salesforce
-    @wire(getAthletes)
-    wiredAthletes(result) {
-        this.wiredAthletesResult = result;
-        if (result.data) {
-            this.filterAthletes(result.data);
-        } else if (result.error) {
-            // Handle error
-            console.error('Error fetching athletes:', result.error);
+    // Hardcoded record ID
+    recordId = 'a00av000000w6jS';
+
+    @wire(getRecord, { recordId: '$recordId', fields: ['Athlete__c.Name', 'Athlete__c.Profile_Picture__c', 'Athlete__c.First_Name__c', 'Athlete__c.Last_Name__c', 'Athlete__c.City__c', 'Athlete__c.Country__c'] })
+    wiredRecord({ error, data }) {
+        if (data) {
+            this.athlete = data;
+            this.error = undefined;
+        } else if (error) {
+            this.error = error;
+            this.athlete = undefined;
         }
     }
-
-    // Method to filter athletes based on name
-    filterAthletes(data) {
-        this.athletes = data.filter(athlete => athlete.Name === 'a00av000000w6jS');
-    }
-
-
-    
 }
