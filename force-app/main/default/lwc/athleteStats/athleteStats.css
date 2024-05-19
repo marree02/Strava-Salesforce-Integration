@@ -1,20 +1,52 @@
 .container {
+    font-family: Arial, sans-serif;
+    border: 1px solid #d8dde6;
+    border-radius: 0.25rem;
     padding: 1rem;
 }
 
-.container img {
-    width: 200px;
-    height: 200px;
-    border-radius: 50%;
-    object-fit: cover;
-}
-
-.container h2 {
-    font-size: 1.5rem;
+.slds-card__body {
     margin-bottom: 1rem;
 }
 
-.container p {
-    font-size: 1rem;
+.slds-text-heading_large {
+    font-size: 2rem;
     margin-bottom: 0.5rem;
 }
+
+.slds-text-body_regular {
+    font-size: 1rem;
+    margin-bottom: 0.25rem;
+}
+
+.slds-grid {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.slds-col {
+    flex-grow: 1;
+    flex-basis: 0;
+}
+
+.slds-size_1-of-2 {
+    flex-basis: 50%;
+}
+
+.slds-var-m-around_medium {
+    margin: 1rem;
+}
+
+.slds-var-p-around_medium {
+    padding: 1rem;
+}
+
+.slds-var-m-bottom_small {
+    margin-bottom: 0.5rem;
+}
+
+.slds-text-heading_small {
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
+}
+
