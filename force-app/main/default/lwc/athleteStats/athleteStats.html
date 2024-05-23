@@ -2,39 +2,15 @@
     <template if:true={athlete}>
         <div class="container slds-card slds-var-m-around_medium">
             <div class="slds-card__body">
-                <h2 class="slds-text-heading_large">{athlete.First_Name__c}</h2>
-                <!-- <img src={athlete.Profile_Picture__c.value} alt="Profile Picture" width="200" height="200"> -->
-                <p class="slds-text-body_regular">City: {athlete.City__c}</p>
-                <p class="slds-text-body_regular">Country: {athlete.Country__c}</p>
-            </div>
-            <div class="slds-grid slds-wrap">
-                <div class="slds-col slds-size_1-of-2 slds-var-p-around_medium">
-                    <h3 class="slds-text-heading_small slds-var-m-bottom_small">Recent Rides</h3>
-                    <p class="slds-text-body_regular">Count: {athlete.Recent_Ride_Count__c}</p>
-                    <p class="slds-text-body_regular">Distance: {formattedDistance} km</p>
-                    <p class="slds-text-body_regular">Moving Time: {formattedMovingTime} Min</p>
-                    <p class="slds-text-body_regular">Elapsed Time: {formattedElapsedTime} Min</p>
-                    <p class="slds-text-body_regular">Elevation Gain: {formattedElevationGain} M</p>
-                    <p class="slds-text-body_regular">Achievement Count: {athlete.Recent_Ride_Achievement_Count__c}</p>
-                </div>
-            </div>
-            <div class="slds-grid slds-wrap">
-                <div class="slds-col slds-size_1-of-2 slds-var-p-around_medium">
-                    <h3 class="slds-text-heading_small slds-var-m-bottom_small">All Rides</h3>
-                    <p class="slds-text-body_regular">Count: {athlete.All_Ride_Count__c}</p>
-                    <p class="slds-text-body_regular">Distance: {formattedAllRideDistance} Km</p>
-                    <p class="slds-text-body_regular">Moving Time: {formattedAllRideMovingTime} Min</p>
-                    <p class="slds-text-body_regular">Elapsed Time: {formattedAllRideElapsedTime} Min</p>
-                    <p class="slds-text-body_regular">Elevation Gain: {formattedAllRideElevationGain} M</p>
-                </div>
-                <div class="slds-col slds-size_1-of-2 slds-var-p-around_medium">
-                    <h3 class="slds-text-heading_small slds-var-m-bottom_small">Recent Runs</h3>
-                    <p class="slds-text-body_regular">Count: {athlete.Recent_Run_Count__c}</p>
-                    <p class="slds-text-body_regular">Distance: {athlete.Recent_Run_Distance__c} m</p>
-                    <p class="slds-text-body_regular">Moving Time: {athlete.Recent_Run_Moving_Time__c} sek</p>
-                    <p class="slds-text-body_regular">Elapsed Time: {athlete.Recent_Run_Elapsed_Time__c} sek</p>
-                    <p class="slds-text-body_regular">Elevation Gain: {athlete.Recent_Run_Elevation_Gain__c} m</p>
-                </div>
+                <h2 class="slds-text-heading_large">
+                    <lightning-icon class="endorsement-icon" icon-name="utility:endorsement" size="x-small"></lightning-icon>
+                    {athlete.First_Name__c} Ghostine
+                </h2>
+                <lightning-tree-grid
+                    data={gridData}
+                    columns={columns}
+                    key-field="name">
+                </lightning-tree-grid>
             </div>
         </div>
     </template>

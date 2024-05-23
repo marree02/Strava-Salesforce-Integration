@@ -16,49 +16,59 @@ export default class AthleteStatsComponent extends LightningElement {
             console.error('Error fetching athlete:', result.error);
         }
     }
-    get formattedElevationGain() {
-        return this.athlete && this.athlete.Recent_Ride_Elevation_Gain__c 
-            ? new Intl.NumberFormat('en-US', { minimumFractionDigits: 1, maximumFractionDigits: 1 }).format(this.athlete.Recent_Ride_Elevation_Gain__c)
-            : '00.0';
+
+    // Helper method to format seconds to minutes
+    formatSecondsToMinutes(seconds) {
+        return seconds / 60;
     }
-    get formattedDistance() {
-        return this.athlete && this.athlete.Recent_Ride_Distance__c 
-            ? new Intl.NumberFormat('en-US', { minimumFractionDigits: 1, maximumFractionDigits: 1 }).format(this.athlete.Recent_Ride_Distance__c / 1000)
-            : '00.0';
+
+    // Helper method to format meters to kilometers
+    formatMetersToKilometers(meters) {
+        return meters / 1000;
     }
-    
-    get formattedMovingTime() {
-        return this.athlete && this.athlete.Recent_Ride_Moving_Time__c 
-            ? new Intl.NumberFormat('en-US', { minimumFractionDigits: 1, maximumFractionDigits: 1 }).format(this.athlete.Recent_Ride_Moving_Time__c / 60)
-            : '00.0';
+
+    get gridData() {
+        return [
+            {
+                name: 'Recent Rides',
+                Count: this.athlete.Recent_Ride_Count__c,
+                Distance: this.formatMetersToKilometers(this.athlete.Recent_Ride_Distance__c),
+                MovingTime: this.formatSecondsToMinutes(this.athlete.Recent_Ride_Moving_Time__c),
+                ElapsedTime: this.formatSecondsToMinutes(this.athlete.Recent_Ride_Elapsed_Time__c),
+                ElevationGain: this.formatMetersToKilometers(this.athlete.Recent_Ride_Elevation_Gain__c),
+                AchievementCount: this.athlete.Recent_Ride_Achievement_Count__c,
+                _children: [
+                    {
+                        name: 'All Rides',
+                        Count: this.athlete.All_Ride_Count__c,
+                        Distance: this.formatMetersToKilometers(this.athlete.All_Ride_Distance__c),
+                        MovingTime: this.formatSecondsToMinutes(this.athlete.All_Ride_Moving_Time__c),
+                        ElapsedTime: this.formatSecondsToMinutes(this.athlete.All_Ride_Elapsed_Time__c),
+                        ElevationGain: this.formatMetersToKilometers(this.athlete.All_Ride_Elevation_Gain__c),
+                    },
+                    {
+                        name: 'Recent Runs',
+                        Count: this.athlete.Recent_Run_Count__c,
+                        Distance: this.formatMetersToKilometers(this.athlete.Recent_Run_Distance__c),
+                        MovingTime: this.formatSecondsToMinutes(this.athlete.Recent_Run_Moving_Time__c),
+                        ElapsedTime: this.formatSecondsToMinutes(this.athlete.Recent_Run_Elapsed_Time__c),
+                        ElevationGain: this.formatMetersToKilometers(this.athlete.Recent_Run_Elevation_Gain__c),
+                    }
+                ]
+            }
+        ];
     }
-    
-    get formattedElapsedTime() {
-        return this.athlete && this.athlete.Recent_Ride_Elapsed_Time__c 
-            ? new Intl.NumberFormat('en-US', { minimumFractionDigits: 1, maximumFractionDigits: 1 }).format(this.athlete.Recent_Ride_Elapsed_Time__c / 60)
-            : '00.0';
+
+
+    get columns() {
+     return [
+        { label: 'Name', fieldName: 'name', type: 'text' },
+        { label: 'Count', fieldName: 'Count', type: 'number' },
+        { label: 'Distance', fieldName: 'Distance', type: 'number' },
+        { label: 'Moving Time', fieldName: 'MovingTime', type: 'number' },
+        { label: 'Elapsed Time', fieldName: 'ElapsedTime', type: 'number' },
+        { label: 'Elevation Gain', fieldName: 'ElevationGain', type: 'number' },
+        { label: 'Achievement Count', fieldName: 'AchievementCount', type: 'number' },
+        ];
     }
-    get formattedAllRideDistance() {
-        return this.athlete && this.athlete.All_Ride_Distance__c 
-            ? new Intl.NumberFormat('en-US', { minimumFractionDigits: 1, maximumFractionDigits: 1 }).format(this.athlete.All_Ride_Distance__c / 1000)
-            : '00.0';
-    }
-    
-    get formattedAllRideMovingTime() {
-        return this.athlete && this.athlete.All_Ride_Moving_Time__c 
-            ? new Intl.NumberFormat('en-US', { minimumFractionDigits: 1, maximumFractionDigits: 1 }).format(this.athlete.All_Ride_Moving_Time__c / 60)
-            : '00.0';
-    }
-    
-    get formattedAllRideElapsedTime() {
-        return this.athlete && this.athlete.All_Ride_Elapsed_Time__c 
-            ? new Intl.NumberFormat('en-US', { minimumFractionDigits: 1, maximumFractionDigits: 1 }).format(this.athlete.All_Ride_Elapsed_Time__c / 60)
-            : '00.0';
-    }
-    
-    get formattedAllRideElevationGain() {
-        return this.athlete && this.athlete.All_Ride_Elevation_Gain__c 
-            ? new Intl.NumberFormat('en-US', { minimumFractionDigits: 1, maximumFractionDigits: 1 }).format(this.athlete.All_Ride_Elevation_Gain__c)
-            : '00.0';
-    }
-}
+}   

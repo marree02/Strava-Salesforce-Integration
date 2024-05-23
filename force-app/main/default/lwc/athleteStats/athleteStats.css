@@ -1,52 +1,20 @@
-.container {
-    font-family: Arial, sans-serif;
-    border: 1px solid #d8dde6;
-    border-radius: 0.25rem;
-    padding: 1rem;
+/* Change the background color of the tree grid */
+lightning-tree-grid {
+    background-color: #f5f7fa;
 }
 
-.slds-card__body {
-    margin-bottom: 1rem;
+/* Change the color and style of the border */
+lightning-tree-grid {
+    border-color: #d8dde6;
+    border-style: solid;
+    border-width: 1px;
+}
+/* Change the color of the endorsement icon */
+.endorsement-icon {
+    color: #5a8ebc;
 }
 
-.slds-text-heading_large {
-    font-size: 2rem;
-    margin-bottom: 0.5rem;
+/* Add some margin to the endorsement icon */
+.endorsement-icon {
+    margin-right: 0.5rem;
 }
-
-.slds-text-body_regular {
-    font-size: 1rem;
-    margin-bottom: 0.25rem;
-}
-
-.slds-grid {
-    display: flex;
-    flex-wrap: wrap;
-}
-
-.slds-col {
-    flex-grow: 1;
-    flex-basis: 0;
-}
-
-.slds-size_1-of-2 {
-    flex-basis: 50%;
-}
-
-.slds-var-m-around_medium {
-    margin: 1rem;
-}
-
-.slds-var-p-around_medium {
-    padding: 1rem;
-}
-
-.slds-var-m-bottom_small {
-    margin-bottom: 0.5rem;
-}
-
-.slds-text-heading_small {
-    font-size: 1.5rem;
-    margin-bottom: 0.5rem;
-}
-
